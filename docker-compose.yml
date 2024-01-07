@@ -1,0 +1,10 @@
+version: "3"
+services:
+  sangwondb:
+    container_name: sangwondb
+    image: postgres:latest
+    ports:
+      - "5436:5432"
+    env_file:
+      - .env
+
