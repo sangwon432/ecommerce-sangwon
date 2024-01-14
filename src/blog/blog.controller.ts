@@ -14,14 +14,8 @@ import { CreateBlogDto } from './dto/create-blog.dto';
 export class BlogController {
   constructor(private readonly blogService: BlogService) {}
 
-  //blog data 생성
   @Post('create')
-  async createBlog(
-    // @Body('title') title: string,
-    // @Body('desc') desc: string,
-    // @Body('category') category: string,
-    @Body() createBlogDto: CreateBlogDto,
-  ) {
+  async createBlog(@Body() createBlogDto: CreateBlogDto) {
     return await this.blogService.createBlog(createBlogDto);
   }
 

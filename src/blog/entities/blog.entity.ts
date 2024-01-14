@@ -1,16 +1,8 @@
-import {
-  Column,
-  CreateDateColumn,
-  DeleteDateColumn,
-  Entity,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
+import { Column, Entity } from 'typeorm';
+import { BaseEntity } from '../../common/base.entity';
 
 @Entity()
-export class Blog {
-  @PrimaryGeneratedColumn('uuid')
-  public id: string;
-
+export class Blog extends BaseEntity {
   @Column()
   public title: string;
 
@@ -19,10 +11,4 @@ export class Blog {
 
   @Column()
   public category: string;
-
-  @CreateDateColumn()
-  public createdAt: Date;
-
-  @DeleteDateColumn()
-  public deletedAt: Date;
 }
