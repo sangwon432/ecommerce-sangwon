@@ -16,6 +16,8 @@ export class AuthController {
   // 로그인 api
   @Post('/login')
   async loggedInUser(@Body() loggedinUserDto: LoggedinUserDto) {
-    return await this.authService.logInUser(loggedinUserDto);
+    const user = await this.authService.logInUser(loggedinUserDto);
+    const token = await this.authService.generateAccessToken(user.id);
+    return { user, token };
   }
 }
