@@ -27,6 +27,7 @@ export class User extends BaseEntity {
       d: 'mm',
       protocol: 'https',
     });
+
     //password 암호화
     const saltValue = await bcrypt.genSalt(10);
     this.password = await bcrypt.hash(this.password, saltValue);
