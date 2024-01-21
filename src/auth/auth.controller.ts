@@ -1,9 +1,10 @@
-import { Body, Controller, Post, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { CreateUserDto } from '../user/dto/create-user.dto';
 import { LoggedinUserDto } from '../user/dto/loggedin-user.dto';
 import { LocalAuthGuard } from './guards/local-auth.guard';
 import { RequestWithUserInterface } from './interfaces/requestWithUser.interface';
+import { AccessTokenGuard } from './guards/access-token.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -32,4 +33,12 @@ export class AuthController {
   //   const token = await this.authService.generateAccessToken(user.id);
   //   return { user, token };
   // }
+
+  // 프로필 정보를 가져오는 API
+  // 토큰을 통해 로그인 여부 확인
+  @UseGuards(AccessTokenGuard)
+  @Get()
+  async getUserInfo(@Req() req: RequestWithUserInterface) {
+    return await req.user;
+  }
 }
