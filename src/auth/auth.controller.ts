@@ -5,6 +5,7 @@ import { LoggedinUserDto } from '../user/dto/loggedin-user.dto';
 import { LocalAuthGuard } from './guards/local-auth.guard';
 import { RequestWithUserInterface } from './interfaces/requestWithUser.interface';
 import { AccessTokenGuard } from './guards/access-token.guard';
+import { EmailVerficationDto } from '../user/dto/email-verfication.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -45,5 +46,13 @@ export class AuthController {
   @Post('/email/send')
   async sendEmailTest(@Body('email') email: string) {
     return await this.authService.initEmailVerification(email);
+  }
+
+  @Post('/email/check')
+  async checkEmail(
+    //@Body('email') email: string, @Body('code') code: string
+    @Body() emailVerficationDto: EmailVerficationDto,
+  ) {
+    return await this.authService.confirmEmailVerification(emailVerficationDto);
   }
 }
