@@ -7,4 +7,12 @@ services:
       - "5436:5432"
     env_file:
       - .env
+  redis:
+    container_name: sangwon_redis
+    image: "redis:alpine"
+    env_file:
+      - .env
+    ports:
+      - 6379:6379
+
 
