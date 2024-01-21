@@ -21,7 +21,9 @@ export class AuthController {
   @UseGuards(LocalAuthGuard)
   @Post('/login')
   async loggedInUser(@Req() req: RequestWithUserInterface) {
-    return await req.user;
+    const { user } = req;
+    const token = await this.authService.generateAccessToken(user.id);
+    return { user, token };
   }
 
   //로그인 요청이 들어오면 ->authservice -> userservice -> user table 검색을 통해서 결과값을 던져줌
