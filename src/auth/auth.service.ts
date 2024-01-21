@@ -6,6 +6,7 @@ import * as bcrypt from 'bcryptjs';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { TokenPayloadInterface } from './interfaces/tokenPayload.interface';
+import { EmailService } from '../email/email.service';
 
 @Injectable()
 export class AuthService {
@@ -13,6 +14,7 @@ export class AuthService {
     private readonly userService: UserService,
     private readonly configService: ConfigService,
     private readonly jwtService: JwtService,
+    private readonly emailService: EmailService,
   ) {}
 
   //회원가입 프로세스
@@ -56,5 +58,14 @@ export class AuthService {
       expiresIn: `${this.configService.get('JWT_ACCESSTOKEN_EXPIRATION_TIME')}`,
     });
     return token;
+  }
+
+  async sendEmailTest(email: string) {
+    await this.emailService.sendMail({
+      to: email,
+      subject: 'check email test',
+      text: 'The confirmation number is as follows',
+    });
+    return 'please check your email';
   }
 }
