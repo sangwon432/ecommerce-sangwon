@@ -77,6 +77,9 @@ export class AuthController {
   @Get('/google/callback')
   @UseGuards(GoogleAuthGuard) // useguard means req is used
   async googleLoginCallback(@Req() req: RequestWithUserInterface) {
-    return req.user;
+    // return req.user;
+    const { user } = req;
+    const token = await this.authService.generateAccessToken(user.id);
+    return { user, token };
   }
 }
