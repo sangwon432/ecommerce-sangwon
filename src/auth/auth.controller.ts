@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpStatus,
+  Post,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { CreateUserDto } from '../user/dto/create-user.dto';
 import { LoggedinUserDto } from '../user/dto/loggedin-user.dto';
@@ -6,6 +14,7 @@ import { LocalAuthGuard } from './guards/local-auth.guard';
 import { RequestWithUserInterface } from './interfaces/requestWithUser.interface';
 import { AccessTokenGuard } from './guards/access-token.guard';
 import { EmailVerficationDto } from '../user/dto/email-verfication.dto';
+import { GoogleAuthGuard } from './guards/google-auth.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -54,5 +63,20 @@ export class AuthController {
     @Body() emailVerficationDto: EmailVerficationDto,
   ) {
     return await this.authService.confirmEmailVerification(emailVerficationDto);
+  }
+
+  // social login 은 요청과 결과값 api 두 개 필요
+
+  //Google Login을 요청하는 api
+  @Get('/google')
+  @UseGuards(GoogleAuthGuard)
+  async googleLogin() {
+    return HttpStatus.OK;
+  }
+
+  @Get('/google/callback')
+  @UseGuards(GoogleAuthGuard) // useguard means req is used
+  async googleLoginCallback(@Req() req: RequestWithUserInterface) {
+    return req.user;
   }
 }
