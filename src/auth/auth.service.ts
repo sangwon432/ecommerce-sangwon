@@ -16,6 +16,7 @@ import { EmailService } from '../email/email.service';
 import { CACHE_MANAGER } from '@nestjs/common/cache';
 import { Cache } from 'cache-manager';
 import { EmailVerficationDto } from '../user/dto/email-verfication.dto';
+import { Provider } from '../user/entities/provider.enum';
 
 @Injectable()
 export class AuthService {
@@ -38,7 +39,10 @@ export class AuthService {
     // return newUser;
 
     // 아래는 패스워드 감추기
-    const newUser = await this.userService.createUser(createUserDto);
+    const newUser = await this.userService.createUser({
+      ...createUserDto,
+      provider: Provider.LOCAL,
+    });
     newUser.password = undefined;
     return newUser;
   }
