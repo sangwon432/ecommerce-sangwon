@@ -15,6 +15,7 @@ import { RequestWithUserInterface } from './interfaces/requestWithUser.interface
 import { AccessTokenGuard } from './guards/access-token.guard';
 import { EmailVerficationDto } from '../user/dto/email-verfication.dto';
 import { GoogleAuthGuard } from './guards/google-auth.guard';
+import { NaverAuthGuard } from './guards/naver-auth.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -81,5 +82,17 @@ export class AuthController {
     const { user } = req;
     const token = await this.authService.generateAccessToken(user.id);
     return { user, token };
+  }
+
+  @Get('/naver')
+  @UseGuards(NaverAuthGuard)
+  async naverLogin() {
+    return HttpStatus.OK;
+  }
+
+  @Get('/naver/callback')
+  @UseGuards(NaverAuthGuard)
+  async naverLoginCallback(@Req() req: RequestWithUserInterface) {
+    return req.user;
   }
 }
