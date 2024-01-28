@@ -16,6 +16,7 @@ import { AccessTokenGuard } from './guards/access-token.guard';
 import { EmailVerficationDto } from '../user/dto/email-verfication.dto';
 import { GoogleAuthGuard } from './guards/google-auth.guard';
 import { NaverAuthGuard } from './guards/naver-auth.guard';
+import { KakaoAuthGuard } from './guards/kakao-auth.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -93,6 +94,18 @@ export class AuthController {
   @Get('/naver/callback')
   @UseGuards(NaverAuthGuard)
   async naverLoginCallback(@Req() req: RequestWithUserInterface) {
+    return req.user;
+  }
+
+  @Get('/kakao')
+  @UseGuards(KakaoAuthGuard)
+  async kakaoLogin() {
+    return HttpStatus.OK;
+  }
+
+  @Get('/kakao/callback')
+  @UseGuards(KakaoAuthGuard)
+  async kakaoLoginCallback(@Req() req: RequestWithUserInterface) {
     return req.user;
   }
 }

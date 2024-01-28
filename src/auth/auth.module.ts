@@ -9,6 +9,7 @@ import { AccessTokenStrategy } from './strategies/access-token.strategy';
 import { EmailModule } from '../email/email.module';
 import { GoogleAuthStrategy } from './strategies/google-auth.strategy';
 import { NaverAuthStrategy } from './strategies/naver-auth.strategy';
+import { KakaoAuthStrategy } from './strategies/kakao-auth.strategy';
 
 @Module({
   imports: [UserModule, ConfigModule, JwtModule.register({}), EmailModule],
@@ -19,6 +20,7 @@ import { NaverAuthStrategy } from './strategies/naver-auth.strategy';
     AccessTokenStrategy,
     GoogleAuthStrategy,
     NaverAuthStrategy,
+    KakaoAuthStrategy,
   ],
 })
 export class AuthModule {}
