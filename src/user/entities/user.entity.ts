@@ -3,6 +3,7 @@ import { BeforeInsert, Column, Entity } from 'typeorm';
 import * as bcrypt from 'bcryptjs';
 import * as gravatar from 'gravatar';
 import { Provider } from './provider.enum';
+import { Role } from './role.enum';
 
 @Entity()
 export class User extends BaseEntity {
@@ -25,6 +26,15 @@ export class User extends BaseEntity {
     default: Provider.LOCAL,
   })
   public provider: Provider;
+
+  //롤에 대한 부분을 추가
+  @Column({
+    type: 'enum',
+    enum: Role,
+    array: true,
+    default: [Role.USER],
+  })
+  public roles: Role[];
 
   @BeforeInsert()
   async beforeSaveFunction(): Promise<void> {
