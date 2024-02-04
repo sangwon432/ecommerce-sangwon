@@ -9,8 +9,10 @@ import {
 } from '@nestjs/common';
 import { BlogService } from './blog.service';
 import { CreateBlogDto } from './dto/create-blog.dto';
+import { ApiTags } from '@nestjs/swagger';
 
 @Controller('blog')
+@ApiTags('blog')
 export class BlogController {
   constructor(private readonly blogService: BlogService) {}
 

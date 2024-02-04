@@ -39,6 +39,8 @@ import * as Joi from '@hapi/joi';
 
         KAKAO_AUTH_CLIENTID: Joi.string().required(),
         KAKAO_AUTH_CALLBACK_URL: Joi.string().required(),
+
+        SERVER_PORT: Joi.number().required(),
       }),
     }),
     BlogModule,
