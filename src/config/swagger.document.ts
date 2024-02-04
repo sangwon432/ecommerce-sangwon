@@ -7,6 +7,7 @@ export class BaseAPIDoc {
     return this.builder
       .setTitle('Sangwon ECommerce')
       .setDescription('Sangwon ECommerce API Document')
+      .addBearerAuth()
       .setVersion('1.0')
       .build();
   }

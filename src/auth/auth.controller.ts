@@ -17,7 +17,8 @@ import { EmailVerficationDto } from '../user/dto/email-verfication.dto';
 import { GoogleAuthGuard } from './guards/google-auth.guard';
 import { NaverAuthGuard } from './guards/naver-auth.guard';
 import { KakaoAuthGuard } from './guards/kakao-auth.guard';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { EmailDto } from '../user/dto/email.dto';
 
 @Controller('auth')
 @ApiTags('auth')
@@ -26,6 +27,10 @@ export class AuthController {
 
   // 회원가입 api
   @Post('/signup')
+  @ApiOperation({
+    summary: '이메일 회원 가입',
+    description: '회원가입 API',
+  })
   async createUser(@Body() createUserDto: CreateUserDto) {
     return await this.authService.createUser(createUserDto);
   }
@@ -35,6 +40,11 @@ export class AuthController {
   // 로그인 요청이 들어오면 -> *패스포트 (local strategy)* -> authservice -> user table 검색을 통해서 결과값을 던져줌
   @UseGuards(LocalAuthGuard)
   @Post('/login')
+  @ApiBody({ type: LoggedinUserDto })
+  @ApiOperation({
+    summary: '로그인',
+    description: '로그인 API',
+  })
   async loggedInUser(@Req() req: RequestWithUserInterface) {
     const { user } = req;
     const token = await this.authService.generateAccessToken(user.id);
@@ -52,16 +62,30 @@ export class AuthController {
   // 토큰을 통해 로그인 여부 확인
   @UseGuards(AccessTokenGuard)
   @Get()
+  @ApiBearerAuth()
+  @ApiOperation({
+    summary: 'profile 가져오기 with token',
+    description: 'profile 정보 가져오는 API',
+  })
   async getUserInfo(@Req() req: RequestWithUserInterface) {
     return await req.user;
   }
 
   @Post('/email/send')
+  @ApiBody({ type: EmailDto })
+  @ApiOperation({
+    summary: '이메일 verification 보내기',
+    description: '이메일 verification API',
+  })
   async sendEmailTest(@Body('email') email: string) {
     return await this.authService.initEmailVerification(email);
   }
 
   @Post('/email/check')
+  @ApiOperation({
+    summary: 'email verification 코드 체크',
+    description: 'email verification 코드 체크 api',
+  })
   async checkEmail(
     //@Body('email') email: string, @Body('code') code: string
     @Body() emailVerficationDto: EmailVerficationDto,
