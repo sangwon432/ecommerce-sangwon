@@ -4,6 +4,7 @@ import * as bcrypt from 'bcryptjs';
 import * as gravatar from 'gravatar';
 import { Provider } from './provider.enum';
 import { Role } from './role.enum';
+import { Exclude } from 'class-transformer';
 
 @Entity()
 export class User extends BaseEntity {
@@ -15,6 +16,7 @@ export class User extends BaseEntity {
   public email: string;
 
   @Column({ nullable: true })
+  @Exclude()
   public password?: string;
 
   @Column({ nullable: true })
