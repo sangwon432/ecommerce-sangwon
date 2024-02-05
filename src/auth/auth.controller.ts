@@ -111,17 +111,17 @@ export class AuthController {
     return { user, token };
   }
 
-  @Get('/naver')
-  @UseGuards(NaverAuthGuard)
-  async naverLogin() {
-    return HttpStatus.OK;
-  }
-
-  @Get('/naver/callback')
-  @UseGuards(NaverAuthGuard)
-  async naverLoginCallback(@Req() req: RequestWithUserInterface) {
-    return req.user;
-  }
+  // @Get('/naver')
+  // @UseGuards(NaverAuthGuard)
+  // async naverLogin() {
+  //   return HttpStatus.OK;
+  // }
+  //
+  // @Get('/naver/callback')
+  // @UseGuards(NaverAuthGuard)
+  // async naverLoginCallback(@Req() req: RequestWithUserInterface) {
+  //   return req.user;
+  // }
 
   @Get('/kakao')
   @UseGuards(KakaoAuthGuard)
@@ -132,6 +132,8 @@ export class AuthController {
   @Get('/kakao/callback')
   @UseGuards(KakaoAuthGuard)
   async kakaoLoginCallback(@Req() req: RequestWithUserInterface) {
-    return req.user;
+    const { user } = req;
+    const token = await this.authService.generateAccessToken(user.id);
+    return { user, token };
   }
 }
