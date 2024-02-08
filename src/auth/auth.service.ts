@@ -65,14 +65,31 @@ export class AuthService {
     return user;
   }
 
+  // account token 발급 로직
   public generateAccessToken(userId: string) {
     const payload: TokenPayloadInterface = { userId };
     const token = this.jwtService.sign(payload, {
       secret: this.configService.get('JWT_ACCESSTOKEN_SECRET'),
       expiresIn: `${this.configService.get('JWT_ACCESSTOKEN_EXPIRATION_TIME')}`,
     });
-    return token;
+    // return token;
+    return `Authentication=${token}; HttpOnly; Path=/; Max-Age=${this.configService.get('JWT_ACCESSTOKEN_EXPIRATION_TIME')}`
   }
+
+  //refresh token 발급 로직
+  public generateRefreshToken(userId: string) {
+    const payload: TokenPayloadInterface = {userId};
+    const token = this.jwtService.sign(payload, {
+      secret: this.configService.get('JWT_REFRESHTOKEN_SECRET'),
+      expiresIn: `${this.configService.get('JWT_REFRESHTOKEN_EXPIRATION_TIME')}`,
+    });
+    const cookie = `Refresh=${token}; HttpOnly; Path=/; Max-Age=${this.configService.get('JWT_REFRESHTOKEN_EXPIRATION_TIME')}` //쿠키 형태
+    return {cookie, token}
+
+    // return token;
+  }
+
+
 
   async initEmailVerification(email: string) {
     const generateNo = this.generateOTP();
@@ -104,5 +121,12 @@ export class AuthService {
       OTP += Math.floor(Math.random() * 10);
     }
     return OTP;
+  }
+
+  public getCookiesForLogout() {
+    return [
+      'Authentication=; HttpOnly; Path=/; Max-Age=0',
+      'Refresh=; HttpOnly; Path=/; Max-Age=0',
+    ];
   }
 }
