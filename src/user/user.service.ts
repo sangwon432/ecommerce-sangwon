@@ -4,8 +4,9 @@ import { User } from './entities/user.entity';
 import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import { CACHE_MANAGER } from '@nestjs/common/cache';
-import * as bcrypt from "bcryptjs"
-import { Cache } from "cache-manager"
+import * as bcrypt from 'bcryptjs';
+import { Cache } from 'cache-manager';
+import { use } from 'passport';
 
 @Injectable()
 export class UserService {
@@ -47,5 +48,16 @@ export class UserService {
 
   async removeRefreshTokenFromRedis(userId: string) {
     await this.cacheManager.del(userId);
+  }
+
+  // 레디스(암호화된 refreshToken)와 쿠키에 있는 토큰의 매칭 여부 확인
+  async getUserIfRefreshTokenMatches(refreshToken: string, userId: string) {
+    const user = await this.getUserById(userId);
+    const getUserIdFromRedis = await this.cacheManager.get(userId);
+    const isRefreshTokenMatched = await bcrypt.compare(
+      refreshToken,
+      getUserIdFromRedis,
+    );
+    if (isRefreshTokenMatched) return user;
   }
 }

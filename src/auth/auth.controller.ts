@@ -20,12 +20,15 @@ import { KakaoAuthGuard } from './guards/kakao-auth.guard';
 import { ApiBearerAuth, ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { EmailDto } from '../user/dto/email.dto';
 import { UserService } from '../user/user.service';
+import { RefreshTokenGuard } from './guards/refresh-token.guard';
 
 @Controller('auth')
 @ApiTags('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService,
-              private readonly userService: UserService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly userService: UserService,
+  ) {}
 
   // 회원가입 api
   @Post('/signup')
@@ -50,8 +53,8 @@ export class AuthController {
   async loggedInUser(@Req() req: RequestWithUserInterface) {
     const { user } = req;
     const accessCookie = await this.authService.generateAccessToken(user.id);
-    const {cookie: refreshCookie, token: refreshToken} = await this.authService.generateRefreshToken(user.id);
-
+    const { cookie: refreshCookie, token: refreshToken } =
+      await this.authService.generateRefreshToken(user.id);
 
     await this.userService.setCurrentRefreshTokenToRedis(refreshToken, user.id);
     //return { user, accessToken, refreshToken };
@@ -77,6 +80,16 @@ export class AuthController {
   })
   async getUserInfo(@Req() req: RequestWithUserInterface) {
     return await req.user;
+  }
+
+  @UseGuards(RefreshTokenGuard)
+  @Get('refresh')
+  async refresh(@Req() req: RequestWithUserInterface) {
+    const accessCookie = await this.authService.generateAccessToken(
+      req.user.id,
+    );
+    req.res.setHeader('Set-Cookie', accessCookie);
+    return req.user;
   }
 
   @Post('/email/send')
@@ -116,8 +129,9 @@ export class AuthController {
     // return req.user;
     const { user } = req;
     const accessCookie = await this.authService.generateAccessToken(user.id);
-    const {cookie: refreshCookie, token: refreshToken} = await this.authService.generateRefreshToken(user.id)
-    await this.userService.setCurrentRefreshTokenToRedis(refreshToken, user.id)
+    const { cookie: refreshCookie, token: refreshToken } =
+      await this.authService.generateRefreshToken(user.id);
+    await this.userService.setCurrentRefreshTokenToRedis(refreshToken, user.id);
     req.res.setHeader('Set-Cookie', [accessCookie, refreshCookie]);
     return user;
     // const token = await this.authService.generateAccessToken(user.id);
@@ -155,7 +169,7 @@ export class AuthController {
   @ApiBearerAuth()
   async logout(@Req() req: RequestWithUserInterface) {
     //redis에 refresh token 삭제
-    await this.userService.removeRefreshTokenFromRedis(req.user.id)
+    await this.userService.removeRefreshTokenFromRedis(req.user.id);
     // header에 쿠키 부분 삭제하는 로직
     req.res.setHeader('Set-Cookie', this.authService.getCookiesForLogout());
     return true;
