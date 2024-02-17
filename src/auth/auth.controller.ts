@@ -47,8 +47,8 @@ export class AuthController {
   @Post('/login')
   @ApiBody({ type: LoggedinUserDto })
   @ApiOperation({
-    summary: '로그인',
-    description: '로그인 API',
+    summary: 'sign in',
+    description: 'sign in API',
   })
   async loggedInUser(@Req() req: RequestWithUserInterface) {
     const { user } = req;
