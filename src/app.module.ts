@@ -8,6 +8,7 @@ import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
 import { EmailModule } from './email/email.module';
 import { RedisModule } from './redis/redis.module';
+import { LoggerModule } from './logger/logger.module';
 import * as Joi from '@hapi/joi';
 
 @Module({
@@ -43,6 +44,7 @@ import * as Joi from '@hapi/joi';
         KAKAO_AUTH_CALLBACK_URL: Joi.string().required(),
 
         SERVER_PORT: Joi.number().required(),
+        NODE_ENV: Joi.string().required(),
       }),
     }),
     BlogModule,
@@ -50,6 +52,7 @@ import * as Joi from '@hapi/joi';
     AuthModule,
     EmailModule,
     RedisModule,
+    LoggerModule,
   ],
   controllers: [AppController],
   providers: [AppService],
