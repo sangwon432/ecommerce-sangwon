@@ -8,10 +8,13 @@ import { TransformInterceptor } from './common/transform.interceptor';
 import { HttpExceptionFilter } from './common/http-exception.filter';
 import * as cookieParser from 'cookie-parser';
 import { LoggerInterceptor } from './logger/logger.interceptor';
+import { CustomLogger } from './logger/customLogger';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const configService: ConfigService = app.get(ConfigService);
+
+  app.useLogger(app.get(CustomLogger));
 
   app.use(cookieParser()); // 쿠키에 대한 데이터 파싱
 
