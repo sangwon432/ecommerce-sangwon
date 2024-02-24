@@ -13,6 +13,7 @@ import { CustomLogger } from './logger/customLogger';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const configService: ConfigService = app.get(ConfigService);
+  app.enableCors(); // React app 접근 허용
 
   app.useLogger(app.get(CustomLogger));
 
