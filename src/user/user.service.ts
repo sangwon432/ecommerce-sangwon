@@ -7,6 +7,8 @@ import { CACHE_MANAGER } from '@nestjs/common/cache';
 import * as bcrypt from 'bcryptjs';
 import { Cache } from 'cache-manager';
 import { use } from 'passport';
+import { exBufferedFile } from '../minio-client/file.model';
+import { MinioClientService } from '../minio-client/minio-client.service';
 
 @Injectable()
 export class UserService {
@@ -14,6 +16,7 @@ export class UserService {
     @InjectRepository(User)
     private userRepository: Repository<User>,
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
+    private readonly minioClientService: MinioClientService,
   ) {}
 
   async getAllUserInfo() {
@@ -59,5 +62,19 @@ export class UserService {
       getUserIdFromRedis,
     );
     if (isRefreshTokenMatched) return user;
+  }
+
+  async updateProfileImg(userId: string, profileImg: exBufferedFile) {
+    const uploaded_image = await this.minioClientService.uploadProfileImg(
+      userId,
+      profileImg,
+    );
+
+    console.log('++++++++++++++++++++++++');
+
+    return await this.userRepository.update(
+      { id: userId },
+      { profileImg: `${uploaded_image.url}` },
+    );
   }
 }

@@ -1,9 +1,20 @@
-import { Controller, Get, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Req,
+  UploadedFile,
+  UseGuards,
+  UseInterceptors,
+} from '@nestjs/common';
 import { UserService } from './user.service';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { Role } from './entities/role.enum';
 import { RoleGuard } from '../auth/guards/role.guard';
 import { AccessTokenGuard } from '../auth/guards/access-token.guard';
+import { RequestWithUserInterface } from '../auth/interfaces/requestWithUser.interface';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { exBufferedFile } from '../minio-client/file.model';
 
 @Controller('user')
 @ApiTags('user')
@@ -36,5 +47,17 @@ export class UserController {
   @ApiBearerAuth()
   async getAllUserInfo() {
     return await this.userService.getAllUserInfo();
+  }
+
+  // 프로필 이미지 변경 API 만들기
+  @Post('/profile')
+  @UseGuards(AccessTokenGuard)
+  @UseInterceptors(FileInterceptor('image'))
+  async updateProfileImg(
+    @Req() req: RequestWithUserInterface,
+    @UploadedFile() image: exBufferedFile,
+  ) {
+    // console.log(image);
+    return await this.userService.updateProfileImg(req.user.id, image);
   }
 }
