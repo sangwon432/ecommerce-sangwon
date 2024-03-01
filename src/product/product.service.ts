@@ -3,6 +3,9 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Product } from './entities/product.entity';
 import { Repository } from 'typeorm';
 import { CreateProductDto } from './dto/create-product.dto';
+import { PageOptionsDto } from '../common/dtos/page-options.dto';
+import { PageDto } from '../common/dtos/page.dto';
+import { PageMetaDto } from '../common/dtos/page-meta.dto';
 
 @Injectable()
 export class ProductService {
@@ -19,8 +22,19 @@ export class ProductService {
   }
 
   // 제품을 모두 가져오는 로직
-  async getProducts() {
-    return await this.productRepository.find();
+  async getProducts(pageOptionsDto: PageOptionsDto): Promise<PageDto<Product>> {
+    // return await this.productRepository.find();
+    const queryBuilder = this.productRepository.createQueryBuilder('product');
+    queryBuilder
+      .orderBy('product.createdAt', pageOptionsDto.order)
+      .skip(pageOptionsDto.skip)
+      .take(pageOptionsDto.take);
+
+    const itemCount = await queryBuilder.getCount();
+    const { entities } = await queryBuilder.getRawAndEntities();
+    const pageMetaDto = new PageMetaDto({ itemCount, pageOptionsDto });
+
+    return new PageDto(entities, pageMetaDto);
   }
 
   // 상세 제품을 가져오는 로직

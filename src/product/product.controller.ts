@@ -1,6 +1,9 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
 import { ProductService } from './product.service';
 import { CreateProductDto } from './dto/create-product.dto';
+import { PageOptionsDto } from '../common/dtos/page-options.dto';
+import { PageDto } from '../common/dtos/page.dto';
+import { Product } from './entities/product.entity';
 
 @Controller('product')
 export class ProductController {
@@ -14,8 +17,10 @@ export class ProductController {
 
   // 제품을 모두 가지고오는 API
   @Get('all')
-  async getProducts() {
-    return await this.productService.getProducts();
+  async getProducts(
+    @Query() pageOptionsDto: PageOptionsDto,
+  ): Promise<PageDto<Product>> {
+    return await this.productService.getProducts(pageOptionsDto);
   }
 
   // 상세 제품 가져오기
