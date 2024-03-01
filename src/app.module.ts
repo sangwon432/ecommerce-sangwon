@@ -10,6 +10,7 @@ import { EmailModule } from './email/email.module';
 import { RedisModule } from './redis/redis.module';
 import { LoggerModule } from './logger/logger.module';
 import { ProductModule } from './product/product.module';
+import { MinioClientModule } from './minio-client/minio-client.module';
 import * as Joi from '@hapi/joi';
 
 @Module({
@@ -44,6 +45,12 @@ import * as Joi from '@hapi/joi';
         KAKAO_AUTH_CLIENTID: Joi.string().required(),
         KAKAO_AUTH_CALLBACK_URL: Joi.string().required(),
 
+        MINIO_ENDPOINT: Joi.string().required(),
+        MINIO_PORT: Joi.number().required(),
+        MINIO_ACCESSKEY: Joi.string().required(),
+        MINIO_SECRETKEY: Joi.string().required(),
+        MINIO_BUCKET: Joi.string().required(),
+
         SERVER_PORT: Joi.number().required(),
         NODE_ENV: Joi.string().required(),
       }),
@@ -55,6 +62,7 @@ import * as Joi from '@hapi/joi';
     RedisModule,
     LoggerModule,
     ProductModule,
+    MinioClientModule,
   ],
   controllers: [AppController],
   providers: [AppService],
