@@ -1,5 +1,4 @@
 import { PageMetaDtoParameters } from '../interfaces/page-meta-dto-parameters.interfaces';
-import { PageOptionsDto } from './page-options.dto';
 
 export class PageMetaDto {
   readonly page: number;

@@ -1,9 +1,19 @@
-import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Query,
+} from '@nestjs/common';
 import { ProductService } from './product.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { PageOptionsDto } from '../common/dtos/page-options.dto';
 import { PageDto } from '../common/dtos/page.dto';
 import { Product } from './entities/product.entity';
+import { CreateBlogDto } from '../blog/dto/create-blog.dto';
 
 @Controller('product')
 export class ProductController {
@@ -27,5 +37,20 @@ export class ProductController {
   @Get(':id')
   async getProductById(@Param('id') id: string) {
     return await this.productService.getProductById(id);
+  }
+
+  // 상세 제품 삭제하기
+  @Delete(':id')
+  async RemoveProductById(@Param('id') id: string) {
+    return await this.productService.deleteProductById(id);
+  }
+
+  //상세 제품 수정하기
+  @Patch(':id')
+  async updateProductById(
+    @Param('id') id: string,
+    @Body() updateProductDto: CreateProductDto,
+  ) {
+    return await this.productService.updateProductById(id, updateProductDto);
   }
 }

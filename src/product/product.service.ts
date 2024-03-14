@@ -1,4 +1,10 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import {
+  Delete,
+  HttpException,
+  HttpStatus,
+  Injectable,
+  Param,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Product } from './entities/product.entity';
 import { Repository } from 'typeorm';
@@ -6,6 +12,7 @@ import { CreateProductDto } from './dto/create-product.dto';
 import { PageOptionsDto } from '../common/dtos/page-options.dto';
 import { PageDto } from '../common/dtos/page.dto';
 import { PageMetaDto } from '../common/dtos/page-meta.dto';
+import { CreateBlogDto } from '../blog/dto/create-blog.dto';
 
 @Injectable()
 export class ProductService {
@@ -41,6 +48,24 @@ export class ProductService {
   async getProductById(id: string) {
     const product = await this.productRepository.findOneBy({ id });
     if (product) return product;
+    throw new HttpException('no product', HttpStatus.NOT_FOUND);
+  }
+
+  async deleteProductById(productId: string) {
+    const deleteResponse = await this.productRepository.delete({
+      id: productId,
+    });
+    if (!deleteResponse.affected) {
+      throw new HttpException('no product', HttpStatus.NOT_FOUND);
+    }
+    return `deleted ${productId}`;
+  }
+
+  //상세 제품 데이터 수정하기
+  async updateProductById(id: string, updateProductDto: CreateProductDto) {
+    await this.productRepository.update(id, updateProductDto);
+    const updatedProduct = await this.productRepository.findOneBy({ id });
+    if (updatedProduct) return updatedProduct;
     throw new HttpException('no product', HttpStatus.NOT_FOUND);
   }
 }

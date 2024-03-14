@@ -15,7 +15,7 @@ async function bootstrap() {
   const configService: ConfigService = app.get(ConfigService);
   app.enableCors(); // React app 접근 허용
 
-  app.useLogger(app.get(CustomLogger));
+  // app.useLogger(app.get(CustomLogger));
 
   app.use(cookieParser()); // 쿠키에 대한 데이터 파싱
 
