@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Get,
+  HttpCode,
   HttpStatus,
   Post,
   Req,
@@ -43,6 +44,7 @@ export class AuthController {
   // 로그인 api
 
   // 로그인 요청이 들어오면 -> *패스포트 (local strategy)* -> authservice -> user table 검색을 통해서 결과값을 던져줌
+  @HttpCode(200)
   @UseGuards(LocalAuthGuard)
   @Post('/login')
   @ApiBody({ type: LoggedinUserDto })
@@ -92,6 +94,7 @@ export class AuthController {
     return req.user;
   }
 
+  @HttpCode(200)
   @Post('/email/send')
   @ApiBody({ type: EmailDto })
   @ApiOperation({
