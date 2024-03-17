@@ -189,17 +189,23 @@ export class AuthController {
   /////////////////////////
   /////////////////////////
   /////////////////////////
-  @UseGuards(AccessTokenGuard)
-  @Post('/change-password')
-  @ApiBearerAuth()
-  @ApiOperation({
-    summary: 'Change user password',
-    description: 'Allows a user to change their password.',
-  })
-  async changePassword(
-    @Req() req: RequestWithUserInterface,
-    @Body() changePasswordDto: ChangePasswordDto,
-  ) {
-    return this.authService.changeUserPassword(req.user.id, changePasswordDto);
+  // @UseGuards(AccessTokenGuard)
+  // @Post('/change-password')
+  // @ApiBearerAuth()
+  // @ApiOperation({
+  //   summary: 'Change user password',
+  //   description: 'Allows a user to change their password.',
+  // })
+  // async changePassword(
+  //   @Req() req: RequestWithUserInterface,
+  //   @Body() changePasswordDto: ChangePasswordDto,
+  // ) {
+  //   return this.authService.changeUserPassword(req.user.id, changePasswordDto);
+  // }
+
+  @Post('/change/password')
+  async changePassword(@Body() changePasswordDto: ChangePasswordDto) {
+    console.log(changePasswordDto);
+    return await this.authService.changePassword(changePasswordDto);
   }
 }

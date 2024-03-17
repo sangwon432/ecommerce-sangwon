@@ -157,36 +157,58 @@ export class AuthService {
 
   ///////////////
   //////////////
-  async changeUserPassword(
-    userId: string,
-    changePasswordDto: ChangePasswordDto,
-  ) {
-    const user = await this.userService.getUserById(userId);
+  // async changeUserPassword(
+  //   userId: string,
+  //   changePasswordDto: ChangePasswordDto,
+  // ) {
+  //   const user = await this.userService.getUserById(userId);
+  //
+  //   if (!user) {
+  //     throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+  //   }
+  //
+  //   const isMatch = await bcrypt.compare(
+  //     changePasswordDto.currentPassword,
+  //     user.password,
+  //   );
+  //
+  //   if (!isMatch) {
+  //     throw new HttpException(
+  //       'Current password is incorrect',
+  //       HttpStatus.BAD_REQUEST,
+  //     );
+  //   }
+  //
+  //   const hashedNewPassword = await bcrypt.hash(
+  //     changePasswordDto.newPassword,
+  //     10,
+  //   );
+  //
+  //   // Assuming userService has access to the userRepository or leverages TypeORM's query building features directly.
+  //   await this.userService.updatePassword(userId, hashedNewPassword);
+  //
+  //   return { message: 'Password changed successfully' };
+  // }
 
-    if (!user) {
-      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+  public async changePassword(changePasswordDto: ChangePasswordDto) {
+    const email = await this.decodedComfirmationToken(changePasswordDto.token);
+
+    await this.userService.changePassword(email, changePasswordDto.password);
+  }
+
+  // 토큰에 담겨있는 유저 정보의 이메일 추출
+  public async decodedComfirmationToken(token: string) {
+    try {
+      const payload = await this.jwtService.verify(token, {
+        secret: this.configService.get('FORGOT_PASSWORD_SECRET'),
+      });
+      return payload.email;
+    } catch (err) {
+      if (err?.name === 'TokenExpiredError') {
+        throw new BadRequestException('token expired error');
+      } else {
+        throw new BadRequestException('bad confirmation token');
+      }
     }
-
-    const isMatch = await bcrypt.compare(
-      changePasswordDto.currentPassword,
-      user.password,
-    );
-
-    if (!isMatch) {
-      throw new HttpException(
-        'Current password is incorrect',
-        HttpStatus.BAD_REQUEST,
-      );
-    }
-
-    const hashedNewPassword = await bcrypt.hash(
-      changePasswordDto.newPassword,
-      10,
-    );
-
-    // Assuming userService has access to the userRepository or leverages TypeORM's query building features directly.
-    await this.userService.updatePassword(userId, hashedNewPassword);
-
-    return { message: 'Password changed successfully' };
   }
 }

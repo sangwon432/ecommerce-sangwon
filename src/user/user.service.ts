@@ -80,7 +80,19 @@ export class UserService {
 
   /////////////
   // In userService
-  async updatePassword(userId: string, newPassword: string): Promise<void> {
-    await this.userRepository.update(userId, { password: newPassword });
+  // async updatePassword(userId: string, newPassword: string): Promise<void> {
+  //   await this.userRepository.update(userId, { password: newPassword });
+  // }
+
+  async changePassword(email: string, password: string) {
+    // const user = await this.userRepository.findOneBy({ email });
+    const saltValue = await bcrypt.genSalt(10);
+    const newPassword = await bcrypt.hash(password, saltValue);
+    // return await this.userRepository.save(user);
+
+    return await this.userRepository.update(
+      { email },
+      { password: newPassword },
+    );
   }
 }
