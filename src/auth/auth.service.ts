@@ -17,6 +17,7 @@ import { CACHE_MANAGER } from '@nestjs/common/cache';
 import { Cache } from 'cache-manager';
 import { EmailVerficationDto } from '../user/dto/email-verfication.dto';
 import { Provider } from '../user/entities/provider.enum';
+import { ChangePasswordDto } from '../user/dto/change-password.dto';
 
 @Injectable()
 export class AuthService {
@@ -73,23 +74,27 @@ export class AuthService {
       expiresIn: `${this.configService.get('JWT_ACCESSTOKEN_EXPIRATION_TIME')}`,
     });
     // return token;
-    return `Authentication=${token}; HttpOnly; Path=/; Max-Age=${this.configService.get('JWT_ACCESSTOKEN_EXPIRATION_TIME')}`
+    return `Authentication=${token}; HttpOnly; Path=/; Max-Age=${this.configService.get(
+      'JWT_ACCESSTOKEN_EXPIRATION_TIME',
+    )}`;
   }
 
   //refresh token 발급 로직
   public generateRefreshToken(userId: string) {
-    const payload: TokenPayloadInterface = {userId};
+    const payload: TokenPayloadInterface = { userId };
     const token = this.jwtService.sign(payload, {
       secret: this.configService.get('JWT_REFRESHTOKEN_SECRET'),
-      expiresIn: `${this.configService.get('JWT_REFRESHTOKEN_EXPIRATION_TIME')}`,
+      expiresIn: `${this.configService.get(
+        'JWT_REFRESHTOKEN_EXPIRATION_TIME',
+      )}`,
     });
-    const cookie = `Refresh=${token}; HttpOnly; Path=/; Max-Age=${this.configService.get('JWT_REFRESHTOKEN_EXPIRATION_TIME')}` //쿠키 형태
-    return {cookie, token}
+    const cookie = `Refresh=${token}; HttpOnly; Path=/; Max-Age=${this.configService.get(
+      'JWT_REFRESHTOKEN_EXPIRATION_TIME',
+    )}`; //쿠키 형태
+    return { cookie, token };
 
     // return token;
   }
-
-
 
   async initEmailVerification(email: string) {
     const generateNo = this.generateOTP();
@@ -128,5 +133,60 @@ export class AuthService {
       'Authentication=; HttpOnly; Path=/; Max-Age=0',
       'Refresh=; HttpOnly; Path=/; Max-Age=0',
     ];
+  }
+
+  async forgotPasswordwithSendEmail(email: string): Promise<string> {
+    const payload: any = { email };
+
+    const token = await this.jwtService.sign(payload, {
+      secret: this.configService.get('FORGOT_PASSWORD_SECRET'),
+      expiresIn: this.configService.get('FORGOT_PASSWORD_EXPIRATION_TIME'),
+    });
+    const url = `${this.configService.get(
+      'FRONTEND_DEFAULT_URL',
+    )}/change/password?token=${token}`;
+    const text = `Please check below link. Click here: ${url}`;
+
+    await this.emailService.sendMail({
+      to: email,
+      subject: 'forgot password - sangwon service',
+      text,
+    });
+    return 'please check your email';
+  }
+
+  ///////////////
+  //////////////
+  async changeUserPassword(
+    userId: string,
+    changePasswordDto: ChangePasswordDto,
+  ) {
+    const user = await this.userService.getUserById(userId);
+
+    if (!user) {
+      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+    }
+
+    const isMatch = await bcrypt.compare(
+      changePasswordDto.currentPassword,
+      user.password,
+    );
+
+    if (!isMatch) {
+      throw new HttpException(
+        'Current password is incorrect',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    const hashedNewPassword = await bcrypt.hash(
+      changePasswordDto.newPassword,
+      10,
+    );
+
+    // Assuming userService has access to the userRepository or leverages TypeORM's query building features directly.
+    await this.userService.updatePassword(userId, hashedNewPassword);
+
+    return { message: 'Password changed successfully' };
   }
 }

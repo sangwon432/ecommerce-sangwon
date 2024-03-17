@@ -77,4 +77,10 @@ export class UserService {
       { profileImg: `${uploaded_image.url}` },
     );
   }
+
+  /////////////
+  // In userService
+  async updatePassword(userId: string, newPassword: string): Promise<void> {
+    await this.userRepository.update(userId, { password: newPassword });
+  }
 }

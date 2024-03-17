@@ -16,12 +16,12 @@ import { RequestWithUserInterface } from './interfaces/requestWithUser.interface
 import { AccessTokenGuard } from './guards/access-token.guard';
 import { EmailVerficationDto } from '../user/dto/email-verfication.dto';
 import { GoogleAuthGuard } from './guards/google-auth.guard';
-import { NaverAuthGuard } from './guards/naver-auth.guard';
 import { KakaoAuthGuard } from './guards/kakao-auth.guard';
 import { ApiBearerAuth, ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { EmailDto } from '../user/dto/email.dto';
 import { UserService } from '../user/user.service';
 import { RefreshTokenGuard } from './guards/refresh-token.guard';
+import { ChangePasswordDto } from '../user/dto/change-password.dto';
 
 @Controller('auth')
 @ApiTags('auth')
@@ -32,12 +32,14 @@ export class AuthController {
   ) {}
 
   // 회원가입 api
+
   @Post('/signup')
   @ApiOperation({
     summary: '이메일 회원 가입',
     description: '회원가입 API',
   })
   async createUser(@Body() createUserDto: CreateUserDto) {
+    console.log(createUserDto);
     return await this.authService.createUser(createUserDto);
   }
 
@@ -103,6 +105,12 @@ export class AuthController {
   })
   async sendEmailTest(@Body('email') email: string) {
     return await this.authService.initEmailVerification(email);
+  }
+
+  @HttpCode(200)
+  @Post('/forgot/password')
+  async forgotPassword(@Body('email') email: string): Promise<string> {
+    return await this.authService.forgotPasswordwithSendEmail(email);
   }
 
   @Post('/email/check')
@@ -176,5 +184,22 @@ export class AuthController {
     // header에 쿠키 부분 삭제하는 로직
     req.res.setHeader('Set-Cookie', this.authService.getCookiesForLogout());
     return true;
+  }
+
+  /////////////////////////
+  /////////////////////////
+  /////////////////////////
+  @UseGuards(AccessTokenGuard)
+  @Post('/change-password')
+  @ApiBearerAuth()
+  @ApiOperation({
+    summary: 'Change user password',
+    description: 'Allows a user to change their password.',
+  })
+  async changePassword(
+    @Req() req: RequestWithUserInterface,
+    @Body() changePasswordDto: ChangePasswordDto,
+  ) {
+    return this.authService.changeUserPassword(req.user.id, changePasswordDto);
   }
 }
