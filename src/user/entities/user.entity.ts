@@ -1,10 +1,11 @@
 import { BaseEntity } from '../../common/base.entity';
-import { BeforeInsert, Column, Entity } from 'typeorm';
+import { BeforeInsert, Column, Entity, JoinColumn, OneToOne } from 'typeorm';
 import * as bcrypt from 'bcryptjs';
 import * as gravatar from 'gravatar';
 import { Provider } from './provider.enum';
 import { Role } from './role.enum';
 import { Exclude } from 'class-transformer';
+import { Terms } from './terms.entity';
 
 @Entity()
 export class User extends BaseEntity {
@@ -37,6 +38,13 @@ export class User extends BaseEntity {
     default: [Role.USER],
   })
   public roles: Role[];
+
+  @OneToOne(() => Terms, {
+    eager: true,
+    cascade: true,
+  })
+  @JoinColumn()
+  public terms: Terms;
 
   @BeforeInsert()
   async beforeSaveFunction(): Promise<void> {
