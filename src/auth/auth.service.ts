@@ -74,9 +74,12 @@ export class AuthService {
       expiresIn: `${this.configService.get('JWT_ACCESSTOKEN_EXPIRATION_TIME')}`,
     });
     // return token;
-    return `Authentication=${token}; HttpOnly; Path=/; Max-Age=${this.configService.get(
-      'JWT_ACCESSTOKEN_EXPIRATION_TIME',
-    )}`;
+    return {
+      cookie: `Authentication=${token}; HttpOnly; Path=/; Max-Age=${this.configService.get(
+        'JWT_ACCESSTOKEN_EXPIRATION_TIME',
+      )}`,
+      token,
+    };
   }
 
   //refresh token 발급 로직

@@ -56,14 +56,15 @@ export class AuthController {
   })
   async loggedInUser(@Req() req: RequestWithUserInterface) {
     const { user } = req;
-    const accessCookie = await this.authService.generateAccessToken(user.id);
+    const { cookie, token: accessToken } =
+      await this.authService.generateAccessToken(user.id);
     const { cookie: refreshCookie, token: refreshToken } =
       await this.authService.generateRefreshToken(user.id);
 
     await this.userService.setCurrentRefreshTokenToRedis(refreshToken, user.id);
     //return { user, accessToken, refreshToken };
-    req.res.setHeader('Set-Cookie', [accessCookie, refreshCookie]); // Header (쿠키에) 세팅
-    return user;
+    req.res.setHeader('Set-Cookie', [cookie, refreshCookie]); // Header (쿠키에) 세팅
+    return { user, accessToken };
   }
 
   //로그인 요청이 들어오면 ->authservice -> userservice -> user table 검색을 통해서 결과값을 던져줌
@@ -89,10 +90,8 @@ export class AuthController {
   @UseGuards(RefreshTokenGuard)
   @Get('refresh')
   async refresh(@Req() req: RequestWithUserInterface) {
-    const accessCookie = await this.authService.generateAccessToken(
-      req.user.id,
-    );
-    req.res.setHeader('Set-Cookie', accessCookie);
+    const { cookie } = await this.authService.generateAccessToken(req.user.id);
+    req.res.setHeader('Set-Cookie', cookie);
     return req.user;
   }
 
@@ -139,12 +138,12 @@ export class AuthController {
   async googleLoginCallback(@Req() req: RequestWithUserInterface) {
     // return req.user;
     const { user } = req;
-    const accessCookie = await this.authService.generateAccessToken(user.id);
-    const { cookie: refreshCookie, token: refreshToken } =
-      await this.authService.generateRefreshToken(user.id);
-    await this.userService.setCurrentRefreshTokenToRedis(refreshToken, user.id);
-    req.res.setHeader('Set-Cookie', [accessCookie, refreshCookie]);
-    return user;
+    // const accessCookie = await this.authService.generateAccessToken(user.id);
+    // const { cookie: refreshCookie, token: refreshToken } =
+    //   await this.authService.generateRefreshToken(user.id);
+    // await this.userService.setCurrentRefreshTokenToRedis(refreshToken, user.id);
+    // req.res.setHeader('Set-Cookie', [accessCookie, refreshCookie]);
+    // return user;
     // const token = await this.authService.generateAccessToken(user.id);
     // return { user, token };
   }
