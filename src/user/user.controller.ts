@@ -1,7 +1,9 @@
 import {
+  Body,
   Controller,
   Get,
   Post,
+  Put,
   Req,
   UploadedFile,
   UseGuards,
@@ -15,6 +17,7 @@ import { AccessTokenGuard } from '../auth/guards/access-token.guard';
 import { RequestWithUserInterface } from '../auth/interfaces/requestWithUser.interface';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { exBufferedFile } from '../minio-client/file.model';
+import { CreateUserDto } from './dto/create-user.dto';
 
 @Controller('user')
 @ApiTags('user')
@@ -59,5 +62,14 @@ export class UserController {
   ) {
     // console.log(image);
     return await this.userService.updateProfileImg(req.user.id, image);
+  }
+
+  @Put('/profile')
+  @UseGuards(AccessTokenGuard)
+  async updateProfile(
+    @Req() req: RequestWithUserInterface,
+    @Body() updateUserDto: CreateUserDto,
+  ) {
+    return await this.userService.updateProfile(req.user.id, updateUserDto);
   }
 }

@@ -9,12 +9,11 @@ import {
 
 export class CreateUserDto {
   @IsString()
-  @IsNotEmpty()
   @MinLength(2, { message: '최소 두 자리 이상' })
-  username: string;
+  username?: string;
 
   @IsEmail()
-  email: string;
+  email?: string;
 
   @IsString({ message: '문자열만 허용' })
   @MinLength(8)

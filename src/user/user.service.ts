@@ -95,4 +95,10 @@ export class UserService {
       { password: newPassword },
     );
   }
+
+  async updateProfile(id: string, updateUserDto: CreateUserDto) {
+    // const user = await this.userRepository.findOneBy({ id });
+
+    return await this.userRepository.update({ id }, { ...updateUserDto });
+  }
 }

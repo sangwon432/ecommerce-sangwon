@@ -44,6 +44,7 @@ export class User extends BaseEntity {
     cascade: true,
   })
   @JoinColumn()
+  // @ApiProperty({ type: Consent })
   public terms: Terms;
 
   @BeforeInsert()
