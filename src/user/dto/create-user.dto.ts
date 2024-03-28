@@ -10,12 +10,12 @@ import {
 export class CreateUserDto {
   @IsString()
   @MinLength(2, { message: '최소 두 자리 이상' })
-  username?: string;
+  username: string;
 
   @IsEmail()
-  email?: string;
+  email: string;
 
-  @IsString({ message: '문자열만 허용' })
+  @IsString()
   @MinLength(8)
   //최소 8 자, 최소 하나의 문자, 하나의 숫자 및 하나의 특수 문자 :
   @Matches(/^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@$!%*#?&])[A-Za-z\d$@$!%*#?&]{8,}$/, {

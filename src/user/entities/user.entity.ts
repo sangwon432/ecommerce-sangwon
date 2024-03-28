@@ -6,6 +6,7 @@ import { Provider } from './provider.enum';
 import { Role } from './role.enum';
 import { Exclude } from 'class-transformer';
 import { Terms } from './terms.entity';
+import { InternalServerErrorException } from '@nestjs/common';
 
 @Entity()
 export class User extends BaseEntity {
@@ -49,19 +50,24 @@ export class User extends BaseEntity {
 
   @BeforeInsert()
   async beforeSaveFunction(): Promise<void> {
-    if (this.provider !== Provider.LOCAL) {
-      return;
-    }
-    // profile image 자동 생성
-    this.profileImg = gravatar.url(this.email, {
-      s: '200',
-      r: 'pg',
-      d: 'mm',
-      protocol: 'https',
-    });
+    try {
+      if (this.provider !== Provider.LOCAL) {
+        return;
+      }
+      // profile image 자동 생성
+      this.profileImg = gravatar.url(this.email, {
+        s: '200',
+        r: 'pg',
+        d: 'mm',
+        protocol: 'https',
+      });
 
-    //password 암호화
-    const saltValue = await bcrypt.genSalt(10);
-    this.password = await bcrypt.hash(this.password, saltValue);
+      //password 암호화
+      const saltValue = await bcrypt.genSalt(10);
+      this.password = await bcrypt.hash(this.password, saltValue);
+    } catch (err) {
+      console.log(err);
+      throw new InternalServerErrorException();
+    }
   }
 }

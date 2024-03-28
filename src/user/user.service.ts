@@ -96,9 +96,15 @@ export class UserService {
     );
   }
 
-  async updateProfile(id: string, updateUserDto: CreateUserDto) {
+  async updateProfile(user: User, updateUserDto?: CreateUserDto) {
     // const user = await this.userRepository.findOneBy({ id });
 
-    return await this.userRepository.update({ id }, { ...updateUserDto });
+    const saltValue = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(updateUserDto.password, saltValue);
+
+    return await this.userRepository.update(user.id, {
+      ...updateUserDto,
+      password: hashedPassword,
+    });
   }
 }

@@ -68,8 +68,8 @@ export class UserController {
   @UseGuards(AccessTokenGuard)
   async updateProfile(
     @Req() req: RequestWithUserInterface,
-    @Body() updateUserDto: CreateUserDto,
+    @Body() updateUserDto?: CreateUserDto,
   ) {
-    return await this.userService.updateProfile(req.user.id, updateUserDto);
+    return await this.userService.updateProfile(req.user, updateUserDto);
   }
 }
