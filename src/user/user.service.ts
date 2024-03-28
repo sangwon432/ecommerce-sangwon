@@ -9,6 +9,7 @@ import { Cache } from 'cache-manager';
 import { use } from 'passport';
 import { exBufferedFile } from '../minio-client/file.model';
 import { MinioClientService } from '../minio-client/minio-client.service';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 @Injectable()
 export class UserService {
@@ -64,19 +65,19 @@ export class UserService {
     if (isRefreshTokenMatched) return user;
   }
 
-  async updateProfileImg(userId: string, profileImg: exBufferedFile) {
-    const uploaded_image = await this.minioClientService.uploadProfileImg(
-      userId,
-      profileImg,
-    );
-
-    console.log('++++++++++++++++++++++++');
-
-    return await this.userRepository.update(
-      { id: userId },
-      { profileImg: `${uploaded_image.url}` },
-    );
-  }
+  // async updateProfileImg(user: User, profileImg: exBufferedFile) {
+  //   const uploaded_image = await this.minioClientService.uploadProfileImg(
+  //     user.id,
+  //     profileImg,
+  //   );
+  //
+  //   console.log('++++++++++++++++++++++++');
+  //
+  //   return await this.userRepository.update(
+  //     { id: user.id },
+  //     { profileImg: `${uploaded_image.url}` },
+  //   );
+  // }
 
   /////////////
   // In userService
@@ -96,15 +97,28 @@ export class UserService {
     );
   }
 
-  async updateProfile(user: User, updateUserDto?: CreateUserDto) {
-    // const user = await this.userRepository.findOneBy({ id });
+  // async updateProfile(user: User, updateUserDto?: UpdateUserDto) {
+  //   // const user = await this.userRepository.findOneBy({ id });
+  //
+  //   return await this.userRepository.update(user.id, {
+  //     ...updateUserDto,
+  //   });
+  // }
 
-    const saltValue = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(updateUserDto.password, saltValue);
+  async updateProfileFromToken(
+    user: User,
+    updateUserDto?: UpdateUserDto,
+    profileImg?: exBufferedFile,
+  ) {
+    console.log(profileImg);
+    const uploaded_image = await this.minioClientService.uploadProfileImg(
+      user.id,
+      profileImg,
+    );
 
     return await this.userRepository.update(user.id, {
       ...updateUserDto,
-      password: hashedPassword,
+      profileImg: `${uploaded_image.url}`,
     });
   }
 }

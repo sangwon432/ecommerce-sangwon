@@ -18,6 +18,7 @@ import { RequestWithUserInterface } from '../auth/interfaces/requestWithUser.int
 import { FileInterceptor } from '@nestjs/platform-express';
 import { exBufferedFile } from '../minio-client/file.model';
 import { CreateUserDto } from './dto/create-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 @Controller('user')
 @ApiTags('user')
@@ -53,23 +54,38 @@ export class UserController {
   }
 
   // 프로필 이미지 변경 API 만들기
-  @Post('/profile')
+  // @Post('/profile')
+  // @UseGuards(AccessTokenGuard)
+  // @UseInterceptors(FileInterceptor('image'))
+  // async updateProfileImg(
+  //   @Req() req: RequestWithUserInterface,
+  //   @UploadedFile() image: exBufferedFile,
+  // ) {
+  //   // console.log(image);
+  //   return await this.userService.updateProfileImg(req.user, image);
+  // }
+  //
+  // @Put('/profile')
+  // @UseGuards(AccessTokenGuard)
+  // async updateProfile(
+  //   @Req() req: RequestWithUserInterface,
+  //   @Body() updateUserDto?: UpdateUserDto,
+  // ) {
+  //   return await this.userService.updateProfile(req.user, updateUserDto);
+  // }
+
+  @Put()
   @UseGuards(AccessTokenGuard)
   @UseInterceptors(FileInterceptor('image'))
-  async updateProfileImg(
+  async updateProfileFromToken(
     @Req() req: RequestWithUserInterface,
     @UploadedFile() image: exBufferedFile,
+    @Body() updateUserDto?: UpdateUserDto,
   ) {
-    // console.log(image);
-    return await this.userService.updateProfileImg(req.user.id, image);
-  }
-
-  @Put('/profile')
-  @UseGuards(AccessTokenGuard)
-  async updateProfile(
-    @Req() req: RequestWithUserInterface,
-    @Body() updateUserDto?: CreateUserDto,
-  ) {
-    return await this.userService.updateProfile(req.user, updateUserDto);
+    return await this.userService.updateProfileFromToken(
+      req.user,
+      updateUserDto,
+      image,
+    );
   }
 }
