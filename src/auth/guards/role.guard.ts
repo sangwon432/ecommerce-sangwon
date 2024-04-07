@@ -1,7 +1,7 @@
-import { Role } from '../../user/entities/role.enum';
 import { CanActivate, ExecutionContext, mixin, Type } from '@nestjs/common';
 import { AccessTokenGuard } from './access-token.guard';
 import { RequestWithUserInterface } from '../interfaces/requestWithUser.interface';
+import { Role } from '@user/entities/role.enum';
 
 export const RoleGuard = (role: Role): Type<CanActivate> => {
   class RoleGuardMixin extends AccessTokenGuard {

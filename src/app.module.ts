@@ -1,18 +1,18 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
-import { BlogModule } from './blog/blog.module';
 import { DatabaseModule } from './database/database.module';
 import { ConfigModule } from '@nestjs/config';
-import { UserModule } from './user/user.module';
-import { AuthModule } from './auth/auth.module';
-import { EmailModule } from './email/email.module';
-import { RedisModule } from './redis/redis.module';
 import { LoggerModule } from './logger/logger.module';
-import { ProductModule } from './product/product.module';
-import { MinioClientModule } from './minio-client/minio-client.module';
 import * as Joi from '@hapi/joi';
 import { ScheduleModule } from '@nestjs/schedule';
+import { UserModule } from '@user/user.module';
+import { AuthModule } from '@auth/auth.module';
+import { EmailModule } from '@email/email.module';
+import { BlogModule } from '@blog/blog.module';
+import { AppController } from '@root/app.controller';
+import { AppService } from '@root/app.service';
+import { RedisModule } from '@redis/redis.module';
+import { ProductModule } from '@product/product.module';
+import { MinioClientModule } from '@minio-client/minio-client.module';
 
 @Module({
   imports: [

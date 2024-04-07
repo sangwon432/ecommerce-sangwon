@@ -9,19 +9,19 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { CreateUserDto } from '../user/dto/create-user.dto';
-import { LoggedinUserDto } from '../user/dto/loggedin-user.dto';
 import { LocalAuthGuard } from './guards/local-auth.guard';
 import { RequestWithUserInterface } from './interfaces/requestWithUser.interface';
 import { AccessTokenGuard } from './guards/access-token.guard';
-import { EmailVerficationDto } from '../user/dto/email-verfication.dto';
 import { GoogleAuthGuard } from './guards/google-auth.guard';
 import { KakaoAuthGuard } from './guards/kakao-auth.guard';
 import { ApiBearerAuth, ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { EmailDto } from '../user/dto/email.dto';
-import { UserService } from '../user/user.service';
 import { RefreshTokenGuard } from './guards/refresh-token.guard';
-import { ChangePasswordDto } from '../user/dto/change-password.dto';
+import { UserService } from '@user/user.service';
+import { CreateUserDto } from '@user/dto/create-user.dto';
+import { LoggedinUserDto } from '@user/dto/loggedin-user.dto';
+import { EmailDto } from '@user/dto/email.dto';
+import { EmailVerficationDto } from '@user/dto/email-verfication.dto';
+import { ChangePasswordDto } from '@user/dto/change-password.dto';
 
 @Controller('auth')
 @ApiTags('auth')

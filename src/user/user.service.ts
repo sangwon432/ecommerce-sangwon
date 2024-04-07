@@ -1,17 +1,16 @@
 import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { User } from './entities/user.entity';
 import { LessThan, Repository } from 'typeorm';
-import { CreateUserDto } from './dto/create-user.dto';
 import { CACHE_MANAGER } from '@nestjs/common/cache';
 import * as bcrypt from 'bcryptjs';
 import { Cache } from 'cache-manager';
-import { use } from 'passport';
-import { exBufferedFile } from '../minio-client/file.model';
-import { MinioClientService } from '../minio-client/minio-client.service';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { Cron, CronExpression } from '@nestjs/schedule';
-import { EmailService } from '../email/email.service';
+import { User } from '@user/entities/user.entity';
+import { CreateUserDto } from '@user/dto/create-user.dto';
+import { MinioClientService } from '@minio-client/minio-client.service';
+import { EmailService } from '@email/email.service';
+import { exBufferedFile } from '@minio-client/file.model';
 
 @Injectable()
 export class UserService {
