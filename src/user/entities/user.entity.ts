@@ -48,6 +48,12 @@ export class User extends BaseEntity {
   // @ApiProperty({ type: Consent })
   public terms: Terms;
 
+  @Column({ default: false })
+  public isDeleted?: boolean;
+
+  @Column({ type: 'timestamp', nullable: true })
+  public deleteRequestedAt: Date;
+
   @BeforeInsert()
   async beforeSaveFunction(): Promise<void> {
     try {

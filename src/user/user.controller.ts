@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Get,
+  Param,
   Post,
   Put,
   Req,
@@ -19,6 +20,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { exBufferedFile } from '../minio-client/file.model';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { ChangePasswordDto } from './dto/change-password.dto';
 
 @Controller('user')
 @ApiTags('user')
@@ -87,5 +89,18 @@ export class UserController {
       updateUserDto,
       image,
     );
+  }
+
+  // 탈퇴 API -> 엔티티에 추가 -> 1달이든 100일이든 이후에 탈퇴
+  @Post('/delete')
+  @UseGuards(AccessTokenGuard)
+  async deleteUser(@Req() req: RequestWithUserInterface) {
+    return await this.userService.deleteUser(req.user);
+  }
+
+  @Post('/delete/cancel')
+  @UseGuards(AccessTokenGuard)
+  async cancelUserDeleteRequest(@Req() req: RequestWithUserInterface) {
+    return await this.userService.cancelDeleteUserRequest(req.user);
   }
 }

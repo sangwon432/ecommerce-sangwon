@@ -1,7 +1,7 @@
 import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
-import { Repository } from 'typeorm';
+import { LessThan, Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import { CACHE_MANAGER } from '@nestjs/common/cache';
 import * as bcrypt from 'bcryptjs';
@@ -10,6 +10,8 @@ import { use } from 'passport';
 import { exBufferedFile } from '../minio-client/file.model';
 import { MinioClientService } from '../minio-client/minio-client.service';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { Cron, CronExpression } from '@nestjs/schedule';
+import { EmailService } from '../email/email.service';
 
 @Injectable()
 export class UserService {
@@ -18,6 +20,7 @@ export class UserService {
     private userRepository: Repository<User>,
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
     private readonly minioClientService: MinioClientService,
+    private readonly emailService: EmailService,
   ) {}
 
   async getAllUserInfo() {
@@ -121,4 +124,41 @@ export class UserService {
       profileImg: `${uploaded_image.url}`,
     });
   }
+
+  //asdasdasdasdadasdasd
+
+  async deleteUser(user: User) {
+    return await this.userRepository.update(user.id, {
+      isDeleted: true,
+      deleteRequestedAt: new Date(),
+    });
+  }
+
+  async cancelDeleteUserRequest(user: User) {
+    return await this.userRepository.update(user.id, {
+      isDeleted: false,
+      deleteRequestedAt: null,
+    });
+  }
+
+  @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
+  async removeDeleteUser() {
+    const deletionThreshold = new Date();
+    deletionThreshold.setDate(deletionThreshold.getDate() - 30);
+    await this.userRepository.delete({
+      isDeleted: true,
+      deleteRequestedAt: LessThan(deletionThreshold),
+    });
+  }
+
+  //5초마다 이메일 보내기 (cron 테스트용)
+  // @Cron(CronExpression.EVERY_5_SECONDS)
+  // async testCron() {
+  //   await this.emailService.sendMail({
+  //     to: 'swonl0622@gmail.com',
+  //     subject: 'cron test',
+  //     text: 'cron test',
+  //   });
+  //   console.log('Cron test');
+  // }
 }

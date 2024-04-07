@@ -12,6 +12,7 @@ import { LoggerModule } from './logger/logger.module';
 import { ProductModule } from './product/product.module';
 import { MinioClientModule } from './minio-client/minio-client.module';
 import * as Joi from '@hapi/joi';
+import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
   imports: [
@@ -60,6 +61,7 @@ import * as Joi from '@hapi/joi';
         NODE_ENV: Joi.string().required(),
       }),
     }),
+    ScheduleModule.forRoot(),
     BlogModule,
     UserModule,
     AuthModule,
