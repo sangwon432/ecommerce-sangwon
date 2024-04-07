@@ -141,10 +141,10 @@ export class UserService {
     });
   }
 
-  @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
+  @Cron(CronExpression.EVERY_MINUTE)
   async removeDeleteUser() {
     const deletionThreshold = new Date();
-    deletionThreshold.setDate(deletionThreshold.getDate() - 30);
+    deletionThreshold.setDate(deletionThreshold.getDate());
     await this.userRepository.delete({
       isDeleted: true,
       deleteRequestedAt: LessThan(deletionThreshold),
