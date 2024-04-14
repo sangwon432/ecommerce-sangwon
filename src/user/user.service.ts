@@ -11,6 +11,8 @@ import { CreateUserDto } from '@user/dto/create-user.dto';
 import { MinioClientService } from '@minio-client/minio-client.service';
 import { EmailService } from '@email/email.service';
 import { exBufferedFile } from '@minio-client/file.model';
+import { Profile } from '@profile/entities/profile.entity';
+import { Education } from '@root/education/entities/education.entity';
 
 @Injectable()
 export class UserService {
@@ -124,8 +126,6 @@ export class UserService {
     });
   }
 
-  //asdasdasdasdadasdasd
-
   async deleteUser(user: User) {
     return await this.userRepository.update(user.id, {
       isDeleted: true,
@@ -159,5 +159,38 @@ export class UserService {
   //     text: 'cron test',
   //   });
   //   console.log('Cron test');
+  // }
+
+  async updateUserInfo(user: User, info: Profile | Education) {
+    const existedUser = await this.userRepository.findOneBy({
+      id: user.id,
+    });
+
+    if (!existedUser) throw new Error('User not found');
+    // existedUser.profile = info;
+    if (this.isProfile(info)) {
+      existedUser.profile = info;
+    } else if (this.isEducation(info)) {
+      existedUser.education = info;
+    }
+    return await this.userRepository.save(existedUser);
+  }
+
+  private isProfile(info: Profile | Education): info is Profile {
+    return (info as Profile).mbti !== undefined;
+  }
+
+  private isEducation(info: Education | Profile): info is Education {
+    return (info as Education).highschoolName !== undefined;
+  }
+
+  // async updateUserEducation(user: User, info: Education) {
+  //   const existedUser = await this.userRepository.findOneBy({
+  //     id: user.id,
+  //   });
+  //
+  //   if (!existedUser) throw new Error('User not found');
+  //   existedUser.education = info;
+  //   return await this.userRepository.save(existedUser);
   // }
 }

@@ -13,6 +13,8 @@ import { AppService } from '@root/app.service';
 import { RedisModule } from '@redis/redis.module';
 import { ProductModule } from '@product/product.module';
 import { MinioClientModule } from '@minio-client/minio-client.module';
+import { ProfileModule } from './profile/profile.module';
+import { EducationModule } from './education/education.module';
 
 @Module({
   imports: [
@@ -70,6 +72,8 @@ import { MinioClientModule } from '@minio-client/minio-client.module';
     LoggerModule,
     ProductModule,
     MinioClientModule,
+    ProfileModule,
+    EducationModule,
   ],
   controllers: [AppController],
   providers: [AppService],

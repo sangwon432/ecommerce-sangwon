@@ -11,7 +11,8 @@
       "@redis/*": ["./src/redis/*"],
       "@minio-client/*": ["./src/minio-client/*"],
       "@config/*": ["./src/config/*"],
-      "@product/*": ["./src/product/*"]
+      "@product/*": ["./src/product/*"],
+      "@profile/*": ["./src/profile/*"]
     }
   }
 }

@@ -7,6 +7,8 @@ import { Role } from './role.enum';
 import { Exclude } from 'class-transformer';
 import { Terms } from './terms.entity';
 import { InternalServerErrorException } from '@nestjs/common';
+import { Profile } from '@profile/entities/profile.entity';
+import { Education } from '@root/education/entities/education.entity';
 
 @Entity()
 export class User extends BaseEntity {
@@ -47,6 +49,21 @@ export class User extends BaseEntity {
   @JoinColumn()
   // @ApiProperty({ type: Consent })
   public terms: Terms;
+
+  @OneToOne(() => Profile, {
+    eager: true,
+    cascade: true,
+  })
+  @JoinColumn()
+  // @ApiProperty({ type: Consent })
+  public profile: Profile;
+
+  @OneToOne(() => Education, {
+    eager: true,
+    cascade: true,
+  })
+  @JoinColumn()
+  public education: Education;
 
   @Column({ default: false })
   public isDeleted?: boolean;
