@@ -74,12 +74,22 @@ export class AuthService {
       expiresIn: `${this.configService.get('JWT_ACCESSTOKEN_EXPIRATION_TIME')}`,
     });
     // return token;
-    return {
-      cookie: `Authentication=${token}; HttpOnly; Path=/; Max-Age=${this.configService.get(
-        'JWT_ACCESSTOKEN_EXPIRATION_TIME',
-      )}`,
-      token,
-    };
+    return `Authentication=${token}; Path=/; Max-Age=${this.configService.get(
+      'JWT_ACCESSTOKEN_EXPIRATION_TIME',
+    )}`;
+    // cookie: `Authentication=${token}; HttpOnly; Path=/; Max-Age=${this.configService.get(
+    //   'JWT_ACCESSTOKEN_EXPIRATION_TIME',
+    // )}`,
+    // token,
+    // return {
+    //   cookie: `Authentication=${token}; Path=/; Max-Age=${this.configService.get(
+    //     'JWT_ACCESSTOKEN_EXPIRATION_TIME',
+    //   )}`,
+    //   // cookie: `Authentication=${token}; HttpOnly; Path=/; Max-Age=${this.configService.get(
+    //   //   'JWT_ACCESSTOKEN_EXPIRATION_TIME',
+    //   // )}`,
+    //   // token,
+    // };
   }
 
   //refresh token 발급 로직

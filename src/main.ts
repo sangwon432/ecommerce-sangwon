@@ -12,7 +12,10 @@ import { LoggerInterceptor } from './logger/logger.interceptor';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const configService: ConfigService = app.get(ConfigService);
-  app.enableCors(); // React app 접근 허용
+  app.enableCors({
+    origin: 'http://localhost:3000',
+    credentials: true,
+  }); // React app 접근 허용
 
   // app.useLogger(app.get(CustomLogger));
 
