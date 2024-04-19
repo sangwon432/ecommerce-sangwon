@@ -1,5 +1,28 @@
 version: "3"
 services:
+
+  sangwon_api:
+    build:
+      dockerfile: Dockerfile
+      context: .
+      target: development
+
+    volumes:
+      - .:/usr/src/app
+
+    env_file:
+      - .env
+    command: npm run start:dev
+    ports:
+      - 8000:8000
+
+    depends_on:
+      - sangwondb
+      - redis
+      - minio
+    networks:
+      - sangwon-network
+
   sangwondb:
     container_name: sangwondb
     image: postgres:latest
@@ -7,6 +30,9 @@ services:
       - "5436:5432"
     env_file:
       - .env
+    networks:
+      - sangwon-network
+
   redis:
     container_name: sangwon_redis
     image: "redis:alpine"
@@ -14,6 +40,8 @@ services:
       - .env
     ports:
       - 6379:6379
+    networks:
+      - sangwon-network
 
   minio:
     image: docker.io/bitnami/minio:2022
@@ -24,5 +52,10 @@ services:
       - MINIO_ROOT_USER=sangwon
       - MINIO_ROOT_PASSWORD=password
       - MINIO_DEFAULT_BUCKETS=sangwon
+    networks:
+      - sangwon-network
 
+networks:
+  sangwon-network:
+    driver: bridge
 
