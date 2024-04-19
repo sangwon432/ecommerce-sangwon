@@ -13,6 +13,7 @@ import { EmailService } from '@email/email.service';
 import { exBufferedFile } from '@minio-client/file.model';
 import { Profile } from '@profile/entities/profile.entity';
 import { Education } from '@root/education/entities/education.entity';
+import { SelfIntroduction } from '@root/self-introduction/entities/self-introduction.entity';
 
 @Injectable()
 export class UserService {
@@ -161,7 +162,10 @@ export class UserService {
   //   console.log('Cron test');
   // }
 
-  async updateUserInfo(user: User, info: Profile | Education) {
+  async updateUserInfo(
+    user: User,
+    info: Profile | Education | SelfIntroduction,
+  ) {
     const existedUser = await this.userRepository.findOneBy({
       id: user.id,
     });
@@ -172,16 +176,28 @@ export class UserService {
       existedUser.profile = info;
     } else if (this.isEducation(info)) {
       existedUser.education = info;
+    } else if (this.isSelfIntroduction(info)) {
+      existedUser.selfIntroduction = info;
     }
     return await this.userRepository.save(existedUser);
   }
 
-  private isProfile(info: Profile | Education): info is Profile {
+  private isProfile(
+    info: Profile | Education | SelfIntroduction,
+  ): info is Profile {
     return (info as Profile).mbti !== undefined;
   }
 
-  private isEducation(info: Education | Profile): info is Education {
+  private isEducation(
+    info: Education | Profile | SelfIntroduction,
+  ): info is Education {
     return (info as Education).highschoolName !== undefined;
+  }
+
+  private isSelfIntroduction(
+    info: Education | Profile | SelfIntroduction,
+  ): info is SelfIntroduction {
+    return (info as SelfIntroduction).interests !== undefined;
   }
 
   // async updateUserEducation(user: User, info: Education) {

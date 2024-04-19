@@ -3,7 +3,6 @@ import { BaseEntity } from '@common/base.entity';
 import { User } from '@user/entities/user.entity';
 import { Gender } from '@common/enums/gender.enum';
 import { BloodType } from '@common/enums/bloodType.enum';
-import { EducationLevel } from '@common/enums/education-level.enum';
 import { Religion } from '@common/enums/religion.enum';
 
 @Entity()
@@ -49,5 +48,3 @@ export class Profile extends BaseEntity {
   })
   public religion: Religion;
 }
-
-///////////////////////

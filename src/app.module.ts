@@ -15,6 +15,7 @@ import { ProductModule } from '@product/product.module';
 import { MinioClientModule } from '@minio-client/minio-client.module';
 import { ProfileModule } from './profile/profile.module';
 import { EducationModule } from './education/education.module';
+import { SelfIntroductionModule } from './self-introduction/self-introduction.module';
 
 @Module({
   imports: [
@@ -74,6 +75,7 @@ import { EducationModule } from './education/education.module';
     MinioClientModule,
     ProfileModule,
     EducationModule,
+    SelfIntroductionModule,
   ],
   controllers: [AppController],
   providers: [AppService],

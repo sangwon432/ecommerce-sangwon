@@ -9,6 +9,7 @@ import { Terms } from './terms.entity';
 import { InternalServerErrorException } from '@nestjs/common';
 import { Profile } from '@profile/entities/profile.entity';
 import { Education } from '@root/education/entities/education.entity';
+import { SelfIntroduction } from '@root/self-introduction/entities/self-introduction.entity';
 
 @Entity()
 export class User extends BaseEntity {
@@ -64,6 +65,13 @@ export class User extends BaseEntity {
   })
   @JoinColumn()
   public education: Education;
+
+  @OneToOne(() => SelfIntroduction, {
+    eager: true,
+    cascade: true,
+  })
+  @JoinColumn()
+  public selfIntroduction: SelfIntroduction;
 
   @Column({ default: false })
   public isDeleted?: boolean;
