@@ -1,0 +1,34 @@
+import { Repository } from 'typeorm';
+import { Cache } from 'cache-manager';
+import { UpdateUserDto } from './dto/update-user.dto';
+import { User } from '@user/entities/user.entity';
+import { CreateUserDto } from '@user/dto/create-user.dto';
+import { MinioClientService } from '@minio-client/minio-client.service';
+import { EmailService } from '@email/email.service';
+import { exBufferedFile } from '@minio-client/file.model';
+import { Profile } from '@profile/entities/profile.entity';
+import { Education } from '@root/education/entities/education.entity';
+import { SelfIntroduction } from '@root/self-introduction/entities/self-introduction.entity';
+export declare class UserService {
+    private userRepository;
+    private cacheManager;
+    private readonly minioClientService;
+    private readonly emailService;
+    constructor(userRepository: Repository<User>, cacheManager: Cache, minioClientService: MinioClientService, emailService: EmailService);
+    getAllUserInfo(): Promise<User[]>;
+    createUser(createUserDto: CreateUserDto): Promise<User>;
+    getUserByEmail(email: string): Promise<User>;
+    getUserById(id: string): Promise<User>;
+    setCurrentRefreshTokenToRedis(refreshToken: string, userId: string): Promise<void>;
+    removeRefreshTokenFromRedis(userId: string): Promise<void>;
+    getUserIfRefreshTokenMatches(refreshToken: string, userId: string): Promise<User>;
+    changePassword(email: string, password: string): Promise<import("typeorm").UpdateResult>;
+    updateProfileFromToken(user: User, updateUserDto?: UpdateUserDto, profileImg?: exBufferedFile): Promise<import("typeorm").UpdateResult>;
+    deleteUser(user: User): Promise<import("typeorm").UpdateResult>;
+    cancelDeleteUserRequest(user: User): Promise<import("typeorm").UpdateResult>;
+    removeDeleteUser(): Promise<void>;
+    updateUserInfo(user: User, info: Profile | Education | SelfIntroduction): Promise<User>;
+    private isProfile;
+    private isEducation;
+    private isSelfIntroduction;
+}
