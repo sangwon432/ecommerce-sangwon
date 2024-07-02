@@ -16,6 +16,7 @@ export class ProfileController {
     @Req() req: RequestWithUserInterface,
     @Body() createProfileDto: CreateProfileDto,
   ): Promise<Profile> {
+    console.log('req', req.user);
     return await this.profileService.createProfile(req.user, createProfileDto);
   }
 

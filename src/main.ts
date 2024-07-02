@@ -13,7 +13,7 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const configService: ConfigService = app.get(ConfigService);
   app.enableCors({
-    origin: 'http://localhost:3000',
+    origin: 'https://localhost:3000',
     credentials: true,
   }); // React app 접근 허용
 

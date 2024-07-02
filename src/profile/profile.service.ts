@@ -23,6 +23,8 @@ export class ProfileService {
       ...createProfileDto,
       user,
     });
+
+    console.log('+++++++++++++new profile: ', newProfile);
     const savedProfile = await this.profileRepository.save(newProfile);
     await this.userService.updateUserInfo(user, savedProfile);
     return newProfile;
