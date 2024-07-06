@@ -70,6 +70,13 @@ export class UserService {
     if (isRefreshTokenMatched) return user;
   }
 
+  async markPhoneAsConfirmed(userId: string) {
+    return await this.userRepository.update(
+      { id: userId },
+      { isPhoneConfirmed: true },
+    );
+  }
+
   // async updateProfileImg(user: User, profileImg: exBufferedFile) {
   //   const uploaded_image = await this.minioClientService.uploadProfileImg(
   //     user.id,

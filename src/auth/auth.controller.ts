@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Get,
@@ -210,6 +211,7 @@ export class AuthController {
     return await this.authService.changePassword(changePasswordDto);
   }
 
+  @UseGuards(AccessTokenGuard)
   @Post('/sms/send')
   async sendSMS(@Body('phone') phone: string): Promise<VerificationInstance> {
     console.log('PHONEEEE', phone);
@@ -217,12 +219,20 @@ export class AuthController {
     return result;
   }
 
+  @UseGuards(AccessTokenGuard)
   @Post('/sms/verify')
   async verifySMS(
+    @Req() req: RequestWithUserInterface,
     // dto 로 만들기 (나중에)
     @Body('phone') phone: string,
     @Body('code') code: string,
   ): Promise<any> {
+    if (req.user.isPhoneConfirmed) {
+      throw new BadRequestException('Phone number already confirmed');
+    }
+
+    await this.userService.markPhoneAsConfirmed(req.user.id);
+
     return await this.smsService.confirmPhoneVerification(phone, code);
   }
 }

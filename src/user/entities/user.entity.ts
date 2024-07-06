@@ -27,6 +27,9 @@ export class User extends BaseEntity {
   @Column({ nullable: true })
   public profileImg?: string;
 
+  @Column({ default: false })
+  public isPhoneConfirmed: boolean;
+
   @Column({
     type: 'enum',
     enum: Provider,
