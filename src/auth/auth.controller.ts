@@ -22,6 +22,8 @@ import { LoggedinUserDto } from '@user/dto/loggedin-user.dto';
 import { EmailDto } from '@user/dto/email.dto';
 import { EmailVerficationDto } from '@user/dto/email-verfication.dto';
 import { ChangePasswordDto } from '@user/dto/change-password.dto';
+import { VerificationInstance } from 'twilio/lib/rest/verify/v2/service/verification';
+import { SmsService } from '@root/sms/sms.service';
 
 @Controller('auth')
 @ApiTags('auth')
@@ -29,6 +31,7 @@ export class AuthController {
   constructor(
     private readonly authService: AuthService,
     private readonly userService: UserService,
+    private readonly smsService: SmsService,
   ) {}
 
   // 회원가입 api
@@ -205,5 +208,12 @@ export class AuthController {
   async changePassword(@Body() changePasswordDto: ChangePasswordDto) {
     console.log(changePasswordDto);
     return await this.authService.changePassword(changePasswordDto);
+  }
+
+  @Post('/sms/send')
+  async sendSMS(@Body('phone') phone: string): Promise<VerificationInstance> {
+    console.log('PHONEEEE', phone);
+    const result = await this.smsService.initiatePhoneNumberVerification(phone);
+    return result;
   }
 }

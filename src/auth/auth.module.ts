@@ -11,9 +11,16 @@ import { KakaoAuthStrategy } from './strategies/kakao-auth.strategy';
 import { RefreshTokenStrategy } from './strategies/refresh-token.strategy';
 import { UserModule } from '@user/user.module';
 import { EmailModule } from '@email/email.module';
+import { SmsModule } from '@root/sms/sms.module';
 
 @Module({
-  imports: [UserModule, ConfigModule, JwtModule.register({}), EmailModule],
+  imports: [
+    UserModule,
+    ConfigModule,
+    JwtModule.register({}),
+    EmailModule,
+    SmsModule,
+  ],
   controllers: [AuthController],
   providers: [
     AuthService,

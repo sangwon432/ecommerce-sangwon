@@ -16,6 +16,6 @@ import { SmsService } from '@root/sms/sms.service';
     }),
   ],
   providers: [SmsService],
-  exports: [SmsModule],
+  exports: [SmsService],
 })
 export class SmsModule {}
