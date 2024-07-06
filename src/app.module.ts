@@ -16,6 +16,8 @@ import { MinioClientModule } from '@minio-client/minio-client.module';
 import { ProfileModule } from './profile/profile.module';
 import { EducationModule } from './education/education.module';
 import { SelfIntroductionModule } from './self-introduction/self-introduction.module';
+import { SmsService } from './sms/sms.service';
+import { SmsModule } from './sms/sms.module';
 
 @Module({
   imports: [
@@ -62,6 +64,10 @@ import { SelfIntroductionModule } from './self-introduction/self-introduction.mo
 
         SERVER_PORT: Joi.number().required(),
         NODE_ENV: Joi.string().required(),
+
+        TWILIO_ACCOUNT_SID: Joi.string().required(),
+        TWILIO_AUTH_TOKEN: Joi.string().required(),
+        TWILIO_VERIFICATION_SERVICE_SID: Joi.string().required(),
       }),
     }),
     ScheduleModule.forRoot(),
@@ -76,8 +82,9 @@ import { SelfIntroductionModule } from './self-introduction/self-introduction.mo
     ProfileModule,
     EducationModule,
     SelfIntroductionModule,
+    SmsModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, SmsService],
 })
 export class AppModule {}
