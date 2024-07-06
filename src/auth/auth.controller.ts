@@ -216,4 +216,13 @@ export class AuthController {
     const result = await this.smsService.initiatePhoneNumberVerification(phone);
     return result;
   }
+
+  @Post('/sms/verify')
+  async verifySMS(
+    // dto 로 만들기 (나중에)
+    @Body('phone') phone: string,
+    @Body('code') code: string,
+  ): Promise<any> {
+    return await this.smsService.confirmPhoneVerification(phone, code);
+  }
 }
