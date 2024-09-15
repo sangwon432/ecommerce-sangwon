@@ -46,8 +46,8 @@ export class UserController {
   //role guard가 있는 경우 useguard decor 추가
   @Get()
   @ApiOperation({
-    summary: '전체 유저 정보 가져오기',
-    description: '전체 유저 정보 가져오는 API',
+    summary: 'get all user info',
+    description: 'get all user info',
   })
   @UseGuards(RoleGuard(Role.ADMIN))
   @ApiBearerAuth()

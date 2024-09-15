@@ -31,4 +31,6 @@ export class EducationController {
       updateEducationDto,
     );
   }
+
+  async deleteEducation() {}
 }

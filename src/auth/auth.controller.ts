@@ -66,8 +66,8 @@ export class AuthController {
 
     await this.userService.setCurrentRefreshTokenToRedis(refreshToken, user.id);
     //return { user, accessToken, refreshToken };
-    req.res.setHeader('Set-Cookie', [cookie, refreshCookie]); // Header (쿠키에) 세팅
-    return user;
+    // req.res.setHeader('Set-Cookie', [cookie, refreshCookie]); // Header (쿠키에) 세팅
+    return { user, cookie };
   }
 
   //로그인 요청이 들어오면 ->authservice -> userservice -> user table 검색을 통해서 결과값을 던져줌

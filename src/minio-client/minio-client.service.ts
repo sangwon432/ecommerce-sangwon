@@ -84,11 +84,9 @@ export class MinioClientService {
       },
     );
     return {
-      url: `http://${this.configService.get(
-        'MINIO_ENDPOINT',
-      )}:${this.configService.get('MINIO_PORT')}/${this.configService.get(
-        'MINIO_BUCKET',
-      )}/${filePath}`,
+      url: `http://localhost:${this.configService.get(
+        'MINIO_PORT',
+      )}/${this.configService.get('MINIO_BUCKET')}/${filePath}`,
     };
   }
 
